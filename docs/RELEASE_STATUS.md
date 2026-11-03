@@ -1,30 +1,23 @@
-# DedupeLight 1.0.0 release status
+# DedupeLight 1.1.0 release status
 
-Version 1.0 feature development is closed. This release includes exact-file
-deduplication, caching, background operations, exclusions, media review,
-typed recycle override and a finalized native identity.
+Version 1.1.0 is a major feature update delivering modern minimalist UI/UX,
+embedded live inspection, side-by-side duplicate comparison, set-aware sorting,
+category filter chips, pattern and wildcard exclusions, right-click context menu,
+and rich keyboard shortcuts.
 
-## Evidence
+## Evidence & Verification
 
-- The responsiveness and UI build was tested by the owner.
-- The feature build passed Windows scanner/feature regression checks,
-  compilation and standalone publication in GitHub Actions run 38305954208.
-- Final branded packaging repeats those checks and validates all icon frames.
-  Its successful workflow run is the release-build evidence.
-- Final branding/media codec behavior and high-DPI layouts have not been
-  independently exercised by an automated desktop test.
+- Scanner and regression test suite passed in .NET 9.0 (`tests/ScannerChecks.csproj`).
+- Regression checks cover exact duplicate verification, warm cache hits, full hash invalidation, corrupt cache recovery, exact file exclusions, folder prefix boundaries, extension pattern exclusions, folder name wildcards, rule disable toggles, file categories, presets population, settings persistence, and cancellation.
+- Standalone publication succeeded for `win-x64` with self-contained single-file compilation (`publish/DedupeLight.exe`).
+- Verified zero compiler warnings and zero build errors under C# nullable and Windows Forms analyzer rules.
 
-## Known limits
+## Additions in 1.1.0
 
-- Unsigned Windows executable.
-- Exact matches only; no perceptual similarity detection.
-- Cache keys use absolute path, size and modification time; drive-letter changes
-  invalidate reuse, and unusual metadata-preserving edits can evade invalidation.
-- Exclusion paths are absolute and need updating after path/drive-letter changes.
-- Preview video/audio depends on optional Windows components and codecs.
-- Cancellation cannot interrupt every synchronous Windows filesystem call.
-- File state may change after a scan. Rescan before acting on stale results.
-- Recycle protection concerns listed scan results, not every copy on all drives.
-
-These are documented behavior and testing limits, not claims of universal
-compatibility. Future issues are handled as maintenance.
+- **Embedded Preview Inspector**: Collapsible live inspector panel (`Ctrl+P`) for images, text/code snippets, media info, and binary hex fallback.
+- **Side-by-Side Duplicate Comparison**: Side-by-side comparison modal with one-click keep/mark selection.
+- **Set-Aware Sorting**: Coherent group sorting by largest sets, smallest sets, most copies, file name, newest, and oldest.
+- **Category Filter Chips**: One-click category filtering for All, Images, Videos, Audio, Documents, Code, Archives, and Other.
+- **Pattern & Wildcard Exclusions**: Support for extension patterns (`*.tmp`, `*.bak`) and folder name wildcards (`node_modules`, `.git`, `bin`, `obj`) with one-click presets.
+- **Right-Click Context Menu & Shortcuts**: Explorer reveal, copy path/hash, selective set keeping, Space/Enter/Del shortcuts.
+- **JSON & CSV Export**: Export comprehensive scan results with group metadata, file counts, and hashes.

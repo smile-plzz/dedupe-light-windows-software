@@ -10,7 +10,7 @@
     <AssemblyName>DedupeLight</AssemblyName>
     <RootNamespace>DedupeLight</RootNamespace>
     <ApplicationIcon>assets/dedupelight.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product>DedupeLight</Product>
     <Description>A lightweight Windows app for finding and reviewing exact duplicate files.</Description>
     <Authors>Ismail Hossain</Authors>

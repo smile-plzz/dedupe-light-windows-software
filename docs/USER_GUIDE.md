@@ -1,96 +1,75 @@
-# DedupeLight 1.0 user guide
+# DedupeLight 1.1 User Guide
 
 ## Install and update
 
 Download the portable ZIP from GitHub Releases. Extract all files, then run
-DedupeLight.exe. Updating means closing the old app and extracting the new
-package. Preferences and exclusions remain in Local AppData. No administrator
-privileges are required by the application.
+`DedupeLight.exe`. Updating means closing the old app and extracting the new
+package. Preferences, cached hashes, and exclusions remain in `%LOCALAPPDATA%\DedupeLight`.
+No administrator privileges or separate .NET runtime are required.
 
 ## Scan and select
 
-Choose a folder or drive. The default minimum size is 1 MB; set 0 to include
-smaller files. Hidden/system files are omitted unless enabled. Directory
-junctions are not followed. Inaccessible locations are skipped and counted.
+1. Choose a folder or drive via **Browse**, paste a path, or drag and drop a folder into the window.
+2. The default minimum size is 1 MB; set 0 to include smaller files. Hidden and system files are omitted unless enabled. Directory junctions and reparse points are not followed to avoid recursion loops. Inaccessible locations are skipped safely.
+3. Select **Scan now** (or press `Enter` in the path box or `F5`).
+4. Duplicate sets are displayed with subtle alternating background tinting so copies belonging to the same set are unmistakably distinct.
 
-Results contain exact matches grouped into sets. The checkbox marks a file for
-an operation; row highlighting identifies the file to review/open. If files are
-checked, those files take priority for recycle/move/copy; otherwise highlighted
-rows are used. Search affects visible rows, not existing checkmarks. Check the
-selected count before acting: checked files can remain selected outside the
-current search.
+## Sorting and category filtering
 
-Select extras applies to every result set, including filtered-out results.
-Keep oldest/newest uses modification time; shortest path uses path length.
-Clear removes all checkmarks.
+- **Category chips**: Click `All`, `Images`, `Videos`, `Audio`, `Documents`, `Code`, `Archives`, or `Other` to focus instantly on specific file types.
+- **Set-aware sorting**: Use the sort dropdown to order groups by:
+  - *Largest sets first* (default — maximizes recoverable storage quickly)
+  - *Smallest sets first*
+  - *Most copies first*
+  - *File name (A-Z)*
+  - *Newest modified*
+  - *Oldest modified*
+- Clicking grid column headers sorts sets coherently, preserving duplicate pairs together.
 
-## Review
+## Live inspector and side-by-side comparison
 
-Select a single row and choose Review. The review window displays its path,
-size, modification time, set and SHA-256. Common images get a bounded thumbnail.
-Supported media can play in optional Windows Media Player controls. Press Play
-to start. Missing components/codecs may require Open in default app. Closing
-the review stops embedded playback.
+- **Embedded inspector (`Ctrl+P`)**: Selecting any row displays an instant preview in the collapsible right-side pane:
+  - Images: aspect-ratio preserved preview with pixel dimensions.
+  - Text & Code: first 60–80 lines with line counts and monospaced readability.
+  - Binary/Other: offset hex and ASCII dump.
+  - Metadata: full path with one-click copy, SHA-256 hash copy, and Explorer reveal.
+- **Side-by-side comparison**: Click **Compare** (or double-click) to open the comparative review dialog. Select another copy from the dropdown to compare two duplicates side-by-side with one-click "Keep Left" or "Keep Right" selection.
 
-Double-click a non-checkbox cell to open that exact file in the default app.
-Show in Explorer reveals its location. Review includes exclusion shortcuts.
+## Context menu and shortcuts
 
-## Intentional copies
+Right-click any duplicate row for instant actions:
+- **Open in default app** (`Enter`)
+- **Show in File Explorer**
+- **Compare with other copies…**
+- **Copy full path** (`Ctrl+C`)
+- **Copy SHA-256 hash**
+- **Toggle mark for recycle** (`Space`)
+- **Keep ONLY this copy in set** (marks all other copies in that set)
+- **Keep ALL copies in set** (clears marks for that set)
+- **Exclude this file / folder / extension**
+- **Recycle selected** (`Delete`)
 
-Exclude file skips only those selected paths. Exclude folder skips their entire
-containing folders, including descendants. Confirm the scope before applying.
-The files are not moved, copied or deleted.
+Other keyboard shortcuts:
+- `Ctrl+F`: Focus search filter
+- `Ctrl+P`: Toggle inspector panel
+- `F5`: Rescan current folder
 
-Excluded sources lets you add files/folders, remove selected rules, or import
-and export JSON lists. Apply saves changes; Cancel leaves them unchanged.
-Imports merge with the list and reject relative paths. Removing exclusions
-requires a rescan to restore results. Exclusion JSON contains paths, not media.
+## Intentional copies and exclusions
 
-Exclusions use absolute paths. If an external drive receives another drive
-letter, update the rule to its new path. Results that no longer have two
-included copies disappear from the duplicate list.
+- **Exclude file**: Skips only selected file paths.
+- **Exclude folder**: Skips containing folders recursively.
+- **Pattern & wildcard rules**:
+  - Extension patterns: `*.tmp`, `*.bak`, `*.log`, `*.cache`, `Thumbs.db`, `.DS_Store`
+  - Folder name wildcards: `node_modules`, `.git`, `.vs`, `bin`, `obj`, `__pycache__` (skips any folder with that name anywhere in the tree).
+- **Excluded sources dialog**:
+  - Add folders, files, or custom patterns.
+  - **Add presets**: Adds common developer, cache, and system exclusion presets with one click.
+  - Checkboxes allow temporarily disabling rules without deleting them.
+  - Import and export exclusion rules as JSON.
 
-## Recycle and transfer
+## Recycle, transfer, and export
 
-Recycle sends selected files to Windows Recycle Bin. To recycle every listed
-copy of a set, review the affected paths, type RECYCLE in the override dialog,
-then confirm the normal recycle action. Keep files/Escape cancels. This
-permission applies only once; it is not a global setting. Copies outside the
-scan are not verified. Recycle Bin behavior and availability depend on the
-drive and Windows.
-
-Move/copy chooses a destination and gives colliding file names a numbered
-suffix. Transferring to the same containing folder is skipped. Failed operations
-are counted. Background operations disable conflicting controls until finished.
-
-CSV export exports the complete current results, including filtered-out rows.
-
-## Cache and preferences
-
-Files are first grouped by size, then sampled, then fully hashed if needed.
-Cached hashes are reused when path, size and modification time match.
-The partial fingerprint alone never confirms a large duplicate file.
-
-Local data lives in %LOCALAPPDATA%\\DedupeLight:
-- settings.json: scan preferences, last location and exclusion rules.
-- hash-cache.json: sample and full hashes.
-
-To rebuild the cache, close the app, remove hash-cache.json and rescan.
-Removing settings.json resets preferences and exclusions; export rules first.
-
-## Troubleshooting
-
-- Slow first scan: large candidate files require full reads. Repeat scans can
-  reuse hashes, but still enumerate folders.
-- Cancel delayed: Windows filesystem calls must return before cancellation can
-  be observed.
-- No results: check minimum size, exclusions and search.
-- Video preview missing: use the default player or install the appropriate
-  Windows media component/codec.
-- File cannot open/move/recycle: it may be locked, disconnected, inaccessible or
-  changed since scanning. Reconnect/unlock it and rescan.
-- SmartScreen notice: version 1.0 is unsigned. Verify the release checksum and
-  source before deciding whether to run it.
-
-Report bugs with app version, Windows version, steps to reproduce and expected
-versus actual behavior. Avoid posting private file paths or exported lists.
+- **Recycle**: Sends selected files to the Windows Recycle Bin (`Delete`).
+- **Recycle override**: If every listed copy of a set is selected, the app requires typing `RECYCLE` to confirm before proceeding.
+- **Move / Copy**: Transfer extra copies to an archive directory with automatic collision renaming (`stem (2).ext`).
+- **Export**: Save scan results as either CSV or JSON with full group IDs, paths, and SHA-256 hashes.
